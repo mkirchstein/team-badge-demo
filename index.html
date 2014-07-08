@@ -31,7 +31,7 @@
           require: 'ngModel',
           link: function(scope, element, attrs, ngModelCtrl) {
 
-            function fromUser(text) {
+            function parse(text) {
               if (!text || text.trim() === '') {
                 return {}
               } else {
@@ -39,17 +39,17 @@
               }
             }
 
-            function toUser(object) {
+            function format(object) {
               // better than JSON.stringify(), because it formats + filters $$hashKey etc.
               return angular.toJson(object, true);
             }
 
-            ngModelCtrl.$parsers.push(fromUser);
-            ngModelCtrl.$formatters.push(toUser);
+            ngModelCtrl.$parsers.push(parse);
+            ngModelCtrl.$formatters.push(format);
 
             scope.$watch(attrs.ngModel, function(newValue, oldValue) {
               if (newValue != oldValue) {
-                ngModelCtrl.$setViewValue(toUser(newValue));
+                ngModelCtrl.$setViewValue(format(newValue));
                 ngModelCtrl.$render();
               }
             }, true);
@@ -67,7 +67,7 @@
       height="180"
       width="180">
       <g
-        transform="scale({{badge.params.scaleBadge}})">
+        ng-attr-transform="scale({{badge.params.scaleBadge}})">
         <g>
           <path
             ng-attr-fill="{{badge.params.colorBadge}}"
